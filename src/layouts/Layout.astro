@@ -1,22 +1,93 @@
+---
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { SITE } from '../config/global';
+import type { Language } from '../config/type';
+
+interface Props {
+	title?: string;
+	description?: string;
+	lang?: Language;
+	canonical_url?: string;
+	imageUrl?: string;
+	ogAlt?: string;
+	articleSchema?: any;
+	metaRobots?: boolean;
+}
+
+const { 
+	title = SITE.name, 
+	description = SITE.description,
+	lang = "en",
+	canonical_url = SITE.url,
+	imageUrl = `${SITE.url}/images/example.jpg`,
+	ogAlt = SITE.name,
+	articleSchema = null,
+	metaRobots = true,
+} = Astro.props;
+---
 <!doctype html>
-<html lang="en">
+<html lang={lang} prefix="og:https://ogp.me/ns#">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+		<!-- Title & Description -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical_url} />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content={lang} />
+		<meta property="og:url" content={canonical_url} />
+		<meta property="og:site_name" content="Home page" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:image:secure_url" content={imageUrl} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogAlt} />
+		<meta property="og:image:type" content="image/png" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+		<meta name="twitter:creator" content="@admin" />
+
+		<!-- Meta Robots -->
+		{metaRobots ? (
+			<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
+		) : (
+			<meta name="robots" content="noindex, nofollow" />
+		)}
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+		<!-- DNS Prefetch & Preconnect (in order of priority) -->
+
+		<!-- Critical Fonts (preload only fonts used above the fold) -->
+		<link rel="preload" href="/fonts/Poppins-Regular.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="/fonts/Poppins-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="/fonts/Poppins-Bold.woff2" as="font" type="font/woff2" crossorigin />
+
+		<!-- Structured Data (JSON-LD) -->
+		{articleSchema && (
+			<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+		)}
+    </head>
 	<body>
+		<Header lang={lang} />
 		<slot />
+		<br />
+		<Footer lang={lang} />
 	</body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+	@import "../styles/global.css";
 </style>

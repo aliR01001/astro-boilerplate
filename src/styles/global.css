@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+@font-face {
+	font-family: "Poppins";
+	src: url("/fonts/Poppins-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+  
+@font-face {
+	font-family: "Poppins";
+	src: url("/fonts/Poppins-SemiBold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+  
+@font-face {
+	font-family: "Poppins";
+	src: url("/fonts/Poppins-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+*/
+  
+:root {
+	/* Define your custom colors here */
+	--color-primary: #00E676;
+	--color-secondary: #022545;
+	--color-tertiary: #eff6fd;
+	--font-sans: "Poppins", sans-serif;
+}
+
+@layer base {
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+
+	html {
+		/* Account for sticky header when scrolling to anchor links */
+		scroll-padding-top: 100px; /* Default for desktop */
+	}
+
+	@media (max-width: 768px) {
+		html {
+			scroll-padding-top: 80px; /* Smaller offset for mobile */
+		}
+	}
+
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	/* Domain Search Form Styles */
+	input::placeholder {
+		opacity: 0.6;
+	}
+
+	/* Input cursor - should be text cursor, not pointer */
+	input {
+		cursor: text;
+	}
+
+	/* Custom select styling */
+	select {
+		cursor: pointer;
+	}
+
+}

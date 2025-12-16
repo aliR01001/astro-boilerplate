@@ -1,0 +1,10 @@
+---
+
+const { center = false } = Astro.props;
+---
+
+<section class="bg-(--color-secondary) px-6 pt-14 pb-20 md:pb-30 md:pt-24 lg:pb-35 lg:pt-29 md:px-10 lg:px-20">
+	<div class={`max-w-7xl mx-auto ${center ? 'text-center' : ''}`}>
+        <slot />
+    </div>
+</section>
