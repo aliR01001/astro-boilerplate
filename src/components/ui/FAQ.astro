@@ -14,7 +14,7 @@ const { faqs, title } = Astro.props as { faqs: FAQItem[], title: string };
 		<!-- FAQ Accordion -->
 		<div class="space-y-4 max-w-4xl mx-auto">
 			{faqs.map((faq, index) => (
-				<div class="faq-item bg-white rounded-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+				<div class="faq-item bg-white rounded-[var(--border-radius-global)] border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
 					<button 
 						class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 cursor-pointer transition-colors duration-200 hover:bg-gray-50"
 						aria-expanded="false"

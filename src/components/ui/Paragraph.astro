@@ -1,7 +1,13 @@
 ---
+type VariantType = 'primary' | 'secondary';
+const { variant = 'primary' } = Astro.props as { variant: VariantType };
 
+const variantStyles = {
+	primary: 'text-(--color-secondary) text-base md:text-lg leading-relaxed',
+	secondary: 'text-base leading-relaxed text-(--color-secondary)/70',
+};
 ---
 
-<div class="space-y-6 text-(--color-secondary) text-base md:text-lg leading-relaxed">
+<div class={`space-y-6 ${variantStyles[variant]}`}>
     <slot />
 </div>

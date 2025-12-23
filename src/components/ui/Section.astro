@@ -1,9 +1,17 @@
 ---
 // Reusable section wrapper component
-const { backgroundColor = 'bg-white', extraClasses = '' } = Astro.props;
+const { backgroundColor = 'bg-white', extraClasses = '' , size = 'normal', center = false } = Astro.props;
+
+const sizeStyles: Record<string, string> = {
+    hero: 'pt-20 pb-20 md:pb-24 md:pt-24 lg:pb-32 lg:pt-32',
+	normal: 'py-20 md:py-40',
+	compact: 'py-10 md:pb-40',
+    small: 'py-10 md:py-20',
+};
+
 ---
 
-<section class={`${backgroundColor} px-6 py-15 md:py-20 md:px-16 lg:px-24 ${extraClasses}`}>
+<section class={`${backgroundColor} px-6 md:px-16 lg:px-24 ${sizeStyles[size]} ${extraClasses} ${center ? 'text-center' : ''}`}>
 	<div class="max-w-7xl mx-auto">
         <slot />
     </div>

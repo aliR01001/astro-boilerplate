@@ -1,7 +1,17 @@
 ---
+type VariantType = 'default' | 'hero' | 'section';
+const { variant = 'default',extraClasses = '' } = Astro.props as { variant: VariantType, extraClasses?: string };
+
+const variantStyles = {
+	default: 'text-xl font-bold text-(--color-secondary) mb-3',
+	section: 'font-medium text-sm md:text-base text-(--color-secondary)/70',
+	hero: 'font-medium text-sm md:text-base text-(--color-secondary) opacity-70 leading-relaxed mb-10',
+};
+
 ---
 
-<h3 class="text-xl md:text-2xl lg:text-3xl font-semibold text-(--color-secondary) mb-3 md:mb-5">
+<h3 class={`${variantStyles[variant]} ${extraClasses}`}>
     <slot />
 </h3>
+
 	

@@ -62,7 +62,7 @@ const { currentLangLabel, switchTo } = selectLanguage(lang, currentPath);
 			<div class="relative group">
 				<button 
 					id="language-switcher"
-					class="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm px-3 py-2 rounded-lg hover:bg-white/10"
+					class="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm px-3 py-2 rounded-[var(--border-radius-global)] hover:bg-white/10"
 					aria-label="Switch language"
 					aria-expanded="false"
 				>
@@ -74,7 +74,7 @@ const { currentLangLabel, switchTo } = selectLanguage(lang, currentPath);
 				<!-- Dropdown Menu -->
 				<div 
 					id="language-dropdown"
-					class="hidden absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+					class="hidden absolute right-0 mt-2 w-32 bg-white rounded-[var(--border-radius-global)] shadow-lg border border-gray-200 py-2 z-50"
 				>
 					{switchTo.map((item) => (
 						<a 

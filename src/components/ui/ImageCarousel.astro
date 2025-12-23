@@ -1,0 +1,246 @@
+---
+interface GalleryImage {
+	attributes: {
+		url: string;
+	};
+}
+
+interface Props {
+	gallery: {
+		data: GalleryImage[];
+	};
+}
+
+const { gallery } = Astro.props;
+
+const images = gallery?.data || [];
+const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+{images.length > 0 && (
+	<div id={carouselId} class="w-full select-none">
+		<div class="relative group">
+			<!-- Carousel Track Container -->
+			<div class="overflow-hidden md:overflow-visible">
+				<div class="carousel-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide py-4 cursor-grab active:cursor-grabbing items-center px-1">
+					{images.map((image, index) => (
+						<div class="carousel-slide shrink-0 snap-start transition-transform duration-300" data-slide-index={index}>
+							<img 
+								src={image.attributes.url}
+								alt={`Tour gallery image ${index + 1}`}
+								class="h-[280px] md:h-[400px] w-auto max-w-[85vw] md:max-w-none object-cover rounded-[var(--border-radius-global)] shadow-md hover:shadow-xl transition-all duration-300 pointer-events-none"
+								loading="lazy"
+								decoding="async"
+								draggable="false"
+							/>
+						</div>
+					))}
+				</div>
+			</div>
+			
+			<!-- Navigation Arrows (Hidden on mobile, visible on desktop hover) -->
+			<button 
+				type="button"
+				class="carousel-prev-btn absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-300 z-10 hover:scale-110 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center text-(--color-secondary)"
+				aria-label="Previous slide"
+			>
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+				</svg>
+			</button>
+			
+			<button 
+				type="button"
+				class="carousel-next-btn absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-300 z-10 hover:scale-110 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center text-(--color-secondary)"
+				aria-label="Next slide"
+			>
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+				</svg>
+			</button>
+		</div>
+		
+		<!-- Navigation Dots -->
+		<div class="carousel-dots flex justify-center items-center gap-2 mt-6" role="tablist" aria-label="Carousel navigation">
+			{images.map((_, index) => (
+				<button 
+					type="button"
+					class={`carousel-dot h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-(--color-primary) w-8' : 'bg-gray-300 hover:bg-gray-400 w-2'}`}
+					data-index={index}
+					role="tab"
+					aria-label={`Go to slide ${index + 1}`}
+					aria-selected={index === 0 ? 'true' : 'false'}
+				></button>
+			))}
+		</div>
+	</div>
+)}
+
+<script define:vars={{ carouselId, imagesCount: images.length }}>
+	(function initCarousel() {
+		const carousel = document.getElementById(carouselId);
+		if (!carousel) return;
+		
+		const track = carousel.querySelector('.carousel-track');
+		const dotsContainer = carousel.querySelector('.carousel-dots');
+		const slides = carousel.querySelectorAll('.carousel-slide');
+		const prevBtn = carousel.querySelector('.carousel-prev-btn');
+		const nextBtn = carousel.querySelector('.carousel-next-btn');
+		
+		if (!track || !dotsContainer || !slides) return;
+		
+		let currentIndex = 0;
+		let isDown = false;
+		let startX;
+		let scrollLeft;
+		
+		// Update active dot and buttons
+		function updateUI() {
+			const dots = dotsContainer.querySelectorAll('.carousel-dot');
+			
+			dots.forEach((dot, i) => {
+				if (i === currentIndex) {
+					dot.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'w-2');
+					dot.classList.add('bg-(--color-primary)', 'w-8');
+					dot.setAttribute('aria-selected', 'true');
+				} else {
+					dot.classList.remove('bg-(--color-primary)', 'w-8');
+					dot.classList.add('bg-gray-300', 'hover:bg-gray-400', 'w-2');
+					dot.setAttribute('aria-selected', 'false');
+				}
+			});
+			
+			if (prevBtn && nextBtn) {
+				prevBtn.disabled = currentIndex === 0;
+				nextBtn.disabled = currentIndex >= imagesCount - 1;
+			}
+		}
+		
+		// Scroll to specific slide
+		function scrollToSlide(index) {
+			if (index < 0 || index >= imagesCount) return;
+			
+			const slide = slides[index];
+			if (slide) {
+				const trackRect = track.getBoundingClientRect();
+				const slideRect = slide.getBoundingClientRect();
+				const scrollLeftTarget = slide.offsetLeft - (trackRect.width - slideRect.width) / 2; // Center alignment
+                
+                // Or simply snap to start if preferred, but design looks centered or left.
+                // Using left alignment to match snap-start:
+                const leftAlign = slide.offsetLeft;
+
+				track.scrollTo({
+					left: leftAlign,
+					behavior: 'smooth'
+				});
+				currentIndex = index;
+				updateUI();
+			}
+		}
+		
+		// Determine current index from scroll position
+		function updateCurrentIndex() {
+			const trackLeft = track.scrollLeft;
+			let minDistance = Infinity;
+			let closestIndex = 0;
+			
+			slides.forEach((slide, index) => {
+				// We want to find which slide is closest to the left edge (snap-start)
+                const slideLeft = slide.offsetLeft;
+				const distance = Math.abs(trackLeft - slideLeft);
+				
+				if (distance < minDistance) {
+					minDistance = distance;
+					closestIndex = index;
+				}
+			});
+			
+			if (closestIndex !== currentIndex) {
+				currentIndex = closestIndex;
+				updateUI();
+			}
+		}
+		
+		// Mouse Drag Implementation
+		track.addEventListener('mousedown', (e) => {
+			isDown = true;
+			track.classList.add('cursor-grabbing');
+            track.classList.remove('cursor-grab');
+			startX = e.pageX - track.offsetLeft;
+			scrollLeft = track.scrollLeft;
+            // Disable scroll snap during drag
+            track.style.scrollSnapType = 'none';
+		});
+		
+		const stopDrag = () => {
+            if (!isDown) return;
+			isDown = false;
+			track.classList.remove('cursor-grabbing');
+            track.classList.add('cursor-grab');
+            // Re-enable scroll snap
+            track.style.scrollSnapType = 'x mandatory';
+            
+            // Optional: Snap to closest manually if needed, but native snap usually handles it after release if we re-enable it.
+            // However, simply re-enabling might not trigger a snap.
+            // Let's trigger a small scroll to force snap or use updateCurrentIndex logic.
+            // Actually, best UX is to let native momentum finish or snap.
+		};
+
+        track.addEventListener('mouseleave', stopDrag);
+		track.addEventListener('mouseup', stopDrag);
+		
+		track.addEventListener('mousemove', (e) => {
+			if (!isDown) return;
+			e.preventDefault();
+			const x = e.pageX - track.offsetLeft;
+			const walk = (x - startX) * 2; // Scroll speed
+			track.scrollLeft = scrollLeft - walk;
+		});
+		
+		// Event Listeners for Navigation
+		if (prevBtn) {
+			prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                scrollToSlide(currentIndex - 1);
+            });
+		}
+		
+		if (nextBtn) {
+			nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                scrollToSlide(currentIndex + 1);
+            });
+		}
+		
+		dotsContainer.addEventListener('click', (e) => {
+			const dot = e.target.closest('.carousel-dot');
+			if (dot && dot.dataset.index) {
+                e.preventDefault();
+				scrollToSlide(parseInt(dot.dataset.index));
+			}
+		});
+		
+		// Scroll Debounce for Index Update
+		let scrollTimeout;
+		track.addEventListener('scroll', () => {
+			clearTimeout(scrollTimeout);
+			scrollTimeout = setTimeout(updateCurrentIndex, 100);
+		}, { passive: true });
+        
+        // Initial setup
+        updateUI();
+	})();
+</script>
+
+<style>
+	/* Hide scrollbar */
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+</style>
