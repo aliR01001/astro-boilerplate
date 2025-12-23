@@ -2,7 +2,7 @@
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import { SITE } from '../config/global';
-import type { Language } from '../config/type';
+import type { Language } from '../types/language';
 
 interface Props {
 	title?: string;
@@ -18,7 +18,7 @@ interface Props {
 const { 
 	title = SITE.name, 
 	description = SITE.description,
-	lang = "en",
+	lang = "fr",
 	canonical_url = SITE.url,
 	imageUrl = `${SITE.url}/images/example.jpg`,
 	ogAlt = SITE.name,
