@@ -28,7 +28,7 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
 							<img 
 								src={image.attributes.url}
 								alt={`Tour gallery image ${index + 1}`}
-								class="h-[280px] md:h-[400px] w-auto max-w-[85vw] md:max-w-none object-cover rounded-[var(--border-radius-global)] shadow-md hover:shadow-xl transition-all duration-300 pointer-events-none"
+								class="h-[280px] md:h-[400px] w-auto max-w-[85vw] md:max-w-none object-cover rounded-(--border-radius-global) shadow-md hover:shadow-xl transition-all duration-300 pointer-events-none"
 								loading="lazy"
 								decoding="async"
 								draggable="false"
