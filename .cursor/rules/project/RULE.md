@@ -6,12 +6,12 @@ alwaysApply: true
 
 ## When Creating a New Section
 
-1. **Content Location**: Always put content in `src/config/i18n/{locale}/{pageName}.ts`, never inline
+1. **Content Location**: Define content directly in the main Astro page frontmatter (`src/pages/[...].astro`), not in separate i18n config files
 2. **TypeScript Interface**: Create interface in `src/types/{pageName}.ts` for section props
 3. **Component Location**: Place in `src/components/sections/{pageName}Page/{SectionName}.astro`
 4. **Reusable Components**: Use `Button`, `Title`, `Section`, `Paragraph`, `Subtitle`, `Badge` from `/ui`
 5. **Styling**: TailwindCSS v4 only, use CSS variables (`--color-primary`, `--color-secondary`), mobile-first
-6. **Structure**: Wrap in `Section` component, use semantic HTML (`<section>`, proper heading hierarchy)
+6. **Structure**: Wrap in `Section` component, pass content as props from the main page
 
 ## When Switching Sections
 
@@ -24,6 +24,6 @@ alwaysApply: true
 ## Quick Reference
 
 - **Framework**: Astro 5.x | **Styling**: TailwindCSS v4
-- **i18n**: `src/config/i18n/{locale}/` - export objects per page
+- **Content**: Define content variables in the main page frontmatter
 - **Components**: `/ui` (reusable) | `/sections/{page}Page/` (page-specific) | `/shared` (cross-page)
-- **Always**: Use reusable components, put content in i18n, TypeScript interfaces, mobile-first responsive
+- **Always**: Use reusable components, define content in main page, TypeScript interfaces, mobile-first responsive
