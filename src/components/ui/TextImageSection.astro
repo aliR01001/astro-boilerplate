@@ -1,24 +1,26 @@
 ---
 interface Props {
-    image: string;
-    alt: string;
+	image: string;
+	alt: string;
+	imagePosition?: "left" | "right";
 }
 
-const { image, alt } = Astro.props as Props;
+const { image, alt, imagePosition = "right" } = Astro.props as Props;
 ---
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-    <div class="space-y-6">
-		<slot/>
+	<div class={`space-y-6 ${imagePosition === "left" ? "lg:order-last" : ""}`}>
+		<slot />
 	</div>
-    
-	<div class="flex justify-center lg:justify-end">
-	   <img 
-			src={image} 
+
+	<div
+		class={`flex justify-center ${imagePosition === "left" ? "lg:justify-start lg:order-first" : "lg:justify-end"}`}
+	>
+		<img
+			src={image}
 			alt={alt}
 			class="w-full max-w-md lg:max-w-lg object-contain"
 			loading="lazy"
 		/>
 	</div>
 </div>
-
